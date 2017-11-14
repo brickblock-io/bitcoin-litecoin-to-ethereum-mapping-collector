@@ -1,0 +1,188 @@
+# NOTE: We're currently not running build tasks inside docker containers because of
+# bad performance and missing docker caching in gitlab. See these issues for example:
+# - https://gitlab.com/gitlab-org/gitlab-ce/issues/17861#note_37212331
+# - https://gitlab.com/gitlab-org/gitlab-ce/issues/33313
+
+cache:
+  untracked: true
+  key: $CI_COMMIT_REF_NAME
+  paths:
+    - .yarn-cache/
+
+variables:
+  # From the docs: https://docs.gitlab.com/ee/ci/yaml/#git-strategy
+  #   „fetch is faster as it re-uses the project workspace (falling back
+  #   to clone if it doesn't exist). git clean is used to undo any changes
+  #   made by the last job, and git fetch is used to retrieve commits
+  #   made since the last job ran.“
+  GIT_STRATEGY: fetch
+
+  # https://medium.com/@gajus/making-docker-in-docker-builds-x2-faster-using-docker-cache-from-option-c01febd8ef84
+  # The 'latest' image. Used as a base to cache from
+  # when building the $BUILD_IMAGE.
+  RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest
+
+stages:
+  - setup
+  - test
+  - build
+  - review
+  - staging
+  - production
+
+before_script:
+  # The image generated in this build
+  - eval export SANITIZED_BRANCH_NAME=$(echo $CI_COMMIT_REF_NAME | sed -e "s/\//-/g")
+  - eval export BUILD_IMAGE=$CI_REGISTRY_IMAGE:$SANITIZED_BRANCH_NAME
+  # The fqdn of the gitlab server is not available in the standard env vars so we cut it out of this URL
+  - eval export GITLAB_HOSTNAME=$(echo $CI_PROJECT_URL | awk -F/ '{print $3}')
+
+setup:
+  stage: setup
+  artifacts:
+    expire_in: 3d
+    paths:
+      - node_modules
+  script:
+    - eval `ssh-agent -s`
+    - ssh-add <(echo "$GITLAB_BOT_SSH_KEY")
+    - yarn install --pure-lockfile --cache-folder .yarn-cache
+
+#lint:
+#  stage: test
+#  cache:
+#    policy: pull
+#  script:
+#    # imports need to be resolved correctly, which can include Contracts so we build them first
+#    - yarn build:contracts
+#    - yarn lint
+
+#flow:
+#  stage: test
+#  cache:
+#    policy: pull
+#  script:
+#    # imports need to be resolved correctly, which can include Contracts so we build them first
+#    - yarn build:contracts
+#    - yarn flow
+
+#test:
+#  stage: test
+#  cache:
+#    policy: pull
+#  script:
+#    # imports need to be resolved correctly, which can include Contracts so we build them first
+#    - yarn build:contracts
+#    - yarn test
+
+#test-build:
+#  stage: test
+#  # This is OR logic. The commit should be in master OR be tagged
+#  only:
+#    - branches
+#    - tags
+#  cache:
+#    policy: pull
+#  script:
+#    - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
+#    - docker build --pull --cache-from $RELEASE_IMAGE --tag $BUILD_IMAGE --build-arg GITLAB_BOT_SSH_KEY="$GITLAB_BOT_SSH_KEY" .
+#    - docker run --name $CI_PROJECT_NAME -p 8080:8080 -d $BUILD_IMAGE
+#    - sleep 10
+#    - if ! curl -I docker:8080; then docker logs $CI_PROJECT_NAME && exit 1; fi
+#    - docker rm -f $CI_PROJECT_NAME
+
+build-and-push-docker-image:
+  stage: build
+  # This is OR logic. The commit should be in master OR be tagged
+  cache:
+    policy: pull
+  script:
+    - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
+    # Using `--pull` makes sure that Docker fetches any changes to the $RELEASE_IMAGE before building
+    # just in case our cache is stale. It takes slightly longer, but means we don’t get stuck without
+    # potential security patches to base images.
+    #
+    # Using `--cache-from $RELEASE_IMAGE` can speed  up building the $BUILD_IMAGE
+    # https://medium.com/@gajus/making-docker-in-docker-builds-x2-faster-using-docker-cache-from-option-c01febd8ef84
+    - docker build --pull --cache-from $RELEASE_IMAGE --tag $BUILD_IMAGE --build-arg GITLAB_BOT_SSH_KEY="$GITLAB_BOT_SSH_KEY" .
+    - docker push $BUILD_IMAGE
+
+    - docker tag $BUILD_IMAGE $RELEASE_IMAGE
+    - docker push $RELEASE_IMAGE
+
+
+#deploy:
+#  stage: deploy
+#  environment: 
+#    name: dev-andrew
+#    url: https://dev-andrew.brickblock-dev.io
+#  only:
+#    - master
+#  script:
+#    - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
+#    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_HOSTNAME}/andrew.holway/deploy-scripts.git
+#    - /bin/sh $(pwd)/deploy-scripts/deploy.sh platform-frontend
+#
+#deploy-andrew:
+#  stage: deploy
+#  environment: 
+#    name: prod-andrew
+#    url: https://prod-andrew.brickblock.io
+#  script:
+#    - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
+#    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_HOSTNAME}/andrew.holway/deploy-scripts.git
+#    - /bin/sh $(pwd)/deploy-scripts/deploy.sh platform-frontend
+#  # These two 'onlys' give us AND logic. The commit should both be in master AND be tagged. NB. this is git tagging. not 'gitlab' tagging.
+#  only:
+#    - master
+#  only:
+#    - tags
+
+deploy-review:
+  stage: review
+  environment:
+    name: review-$CI_BUILD_REF_NAME
+    url: https://$CI_BUILD_REF_SLUG.brickblock-cloud.io
+#    on_stop: stop_review
+  only:
+    - branches
+  except:
+    - master
+#  tags:
+#    - nginx
+#    - review-apps
+#    - deploy
+  script:
+    - python --version
+    - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_HOSTNAME}/andrew.holway/deploy-scripts.git
+    - /bin/sh $(pwd)/deploy-scripts/deploy.sh address-map-api-$CI_BUILD_REF_SLUG
+
+deploy-staging:
+  stage: staging
+  environment:
+    name: staging
+    url: https://staging-map-api.brickblock-cloud.io
+  only:
+    - master
+  script:
+    - python --version
+    - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_HOSTNAME}/andrew.holway/deploy-scripts.git
+    - /bin/sh $(pwd)/deploy-scripts/deploy.sh address-map-api
+
+deploy-production:
+  stage: production
+  environment:
+    name: production
+    url: https://production-map-api.brickblock-cloud.io
+  script:
+    - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_HOSTNAME}/andrew.holway/deploy-scripts.git
+    - /bin/sh $(pwd)/deploy-scripts/deploy.sh address-map-api
+  # These two 'onlys' give us AND logic. The commit should both be in master AND be tagged. NB. this is git tagging. not 'gitlab' tagging.
+  only:
+    - master
+  only:
+    - tags
+
