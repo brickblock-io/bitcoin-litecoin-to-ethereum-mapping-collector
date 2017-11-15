@@ -79,6 +79,8 @@ deploy-review:
     - branches
   except:
     - master
+  variables:
+    GIT_STRATEGY: none
 #  tags:
 #    - nginx
 #    - review-apps
@@ -96,6 +98,7 @@ stop-review:
     action: stop
   when: manual
   script:
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_HOSTNAME}/andrew.holway/deploy-scripts.git
     - /bin/sh $(pwd)/deploy-scripts/destroy.sh map-api
   only:
     - branches
