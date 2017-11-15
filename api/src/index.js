@@ -1,7 +1,14 @@
 const express = require("express")
 const app = express()
+
 const db = require("knex")({
-  client: "mysql"
+  client: "mysql",
+  connection: {
+    host: "dev-db",
+    user: "mysql-testing-db-user",
+    password: "mysql-testing-db-user-password",
+    database: "address-mapping-test-database"
+  }
 })
 
 app.get("/address-map", (req, res) =>
