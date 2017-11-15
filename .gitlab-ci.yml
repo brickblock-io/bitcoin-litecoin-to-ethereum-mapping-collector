@@ -48,48 +48,6 @@ setup:
     - ssh-add <(echo "$GITLAB_BOT_SSH_KEY")
     - yarn install --pure-lockfile --cache-folder .yarn-cache
 
-#lint:
-#  stage: test
-#  cache:
-#    policy: pull
-#  script:
-#    # imports need to be resolved correctly, which can include Contracts so we build them first
-#    - yarn build:contracts
-#    - yarn lint
-
-#flow:
-#  stage: test
-#  cache:
-#    policy: pull
-#  script:
-#    # imports need to be resolved correctly, which can include Contracts so we build them first
-#    - yarn build:contracts
-#    - yarn flow
-
-#test:
-#  stage: test
-#  cache:
-#    policy: pull
-#  script:
-#    # imports need to be resolved correctly, which can include Contracts so we build them first
-#    - yarn build:contracts
-#    - yarn test
-
-#test-build:
-#  stage: test
-#  # This is OR logic. The commit should be in master OR be tagged
-#  only:
-#    - branches
-#    - tags
-#  cache:
-#    policy: pull
-#  script:
-#    - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
-#    - docker build --pull --cache-from $RELEASE_IMAGE --tag $BUILD_IMAGE --build-arg GITLAB_BOT_SSH_KEY="$GITLAB_BOT_SSH_KEY" .
-#    - docker run --name $CI_PROJECT_NAME -p 8080:8080 -d $BUILD_IMAGE
-#    - sleep 10
-#    - if ! curl -I docker:8080; then docker logs $CI_PROJECT_NAME && exit 1; fi
-#    - docker rm -f $CI_PROJECT_NAME
 
 build-and-push-docker-image:
   stage: build
@@ -110,33 +68,6 @@ build-and-push-docker-image:
     - docker tag $BUILD_IMAGE $RELEASE_IMAGE
     - docker push $RELEASE_IMAGE
 
-
-#deploy:
-#  stage: deploy
-#  environment: 
-#    name: dev-andrew
-#    url: https://dev-andrew.brickblock-dev.io
-#  only:
-#    - master
-#  script:
-#    - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
-#    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_HOSTNAME}/andrew.holway/deploy-scripts.git
-#    - /bin/sh $(pwd)/deploy-scripts/deploy.sh platform-frontend
-#
-#deploy-andrew:
-#  stage: deploy
-#  environment: 
-#    name: prod-andrew
-#    url: https://prod-andrew.brickblock.io
-#  script:
-#    - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
-#    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_HOSTNAME}/andrew.holway/deploy-scripts.git
-#    - /bin/sh $(pwd)/deploy-scripts/deploy.sh platform-frontend
-#  # These two 'onlys' give us AND logic. The commit should both be in master AND be tagged. NB. this is git tagging. not 'gitlab' tagging.
-#  only:
-#    - master
-#  only:
-#    - tags
 
 deploy-review:
   stage: review
