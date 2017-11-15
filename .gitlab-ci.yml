@@ -148,6 +148,8 @@ deploy-review:
     - branches
   except:
     - master
+  variables:
+    GIT_STRATEGY: none
 #  tags:
 #    - nginx
 #    - review-apps
