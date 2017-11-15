@@ -6,4 +6,6 @@ ADD . /api-program
 
 EXPOSE 8080
 
+RUN yarn
+
 ENTRYPOINT yarn start

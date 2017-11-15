@@ -143,7 +143,7 @@ deploy-review:
   environment:
     name: review-$CI_BUILD_REF_NAME
     url: https://$CI_BUILD_REF_SLUG.brickblock-cloud.io
-#    on_stop: stop_review
+    on_stop: stop-review
   only:
     - branches
   except:
@@ -153,10 +153,23 @@ deploy-review:
 #    - review-apps
 #    - deploy
   script:
-    - python --version
     - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
     - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_HOSTNAME}/andrew.holway/deploy-scripts.git
-    - /bin/sh $(pwd)/deploy-scripts/deploy.sh address-map-api-$CI_BUILD_REF_SLUG
+    - /bin/sh $(pwd)/deploy-scripts/deploy.sh map-api
+
+stop-review:
+  stage: review
+  environment:
+    name: review-$CI_BUILD_REF_NAME
+    url: https://$CI_BUILD_REF_SLUG.brickblock-cloud.io
+    action: stop
+  when: manual
+  script:
+    - /bin/sh $(pwd)/deploy-scripts/destroy.sh map-api
+  only:
+    - branches
+  except:
+    - master
 
 deploy-staging:
   stage: staging
