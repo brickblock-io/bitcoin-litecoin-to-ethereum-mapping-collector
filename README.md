@@ -28,6 +28,10 @@ alternatively
 
 `$ yarn start`
 
+or with [Nodemon](https://nodemon.io/) watching
+
+`$ yarn start-watch`
+
 ## Testing
 
 To run the Javascript tests, run `$ yarn && yarn test`.

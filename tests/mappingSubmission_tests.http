@@ -1,0 +1,10 @@
+# To run this locally, you must have started the DB (`$ docker-compose up`) and the app (`$ yarn start`)
+GET http://localhost:8080/
+# This file is written in a format that the "restclient-mode" program can run. It's written in Emacs lisp, so pretty shitty stuff. Should not be hard to make a shell script that calls curl based on this data though. Easy to parse
+
+POST http://localhost:8080/address-map
+{
+  address: parsedBody.address,
+  ethereumAddress: parsedBody.ethereumAddress,
+  signature: parsedBody.signature
+}
