@@ -7,12 +7,15 @@
     "license": "UNLICENSED",
     "scripts": {
         "start": "node ./src/index.js",
-        "test": "tape tests/*.js"
+        "test": "tape tests/*.js | tap-dot"
     },
     "dependencies": {
+        "bitcore-message": "^1.0.4",
         "express": "^4.16.2",
         "knex": "^0.14.0",
         "mysql": "^2.15.0",
+        "ramda": "^0.25.0",
+        "tap-dot": "^1.0.5",
         "tape": "^4.8.0"
     }
 }
