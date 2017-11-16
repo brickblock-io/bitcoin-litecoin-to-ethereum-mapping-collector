@@ -27,3 +27,7 @@ And that is what this app is about! A DB, a `POST` http route, and some validati
 alternatively
 
 `$ yarn start`
+
+## Testing
+
+To run the Javascript tests, run `$ yarn && yarn test`.

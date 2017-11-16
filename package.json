@@ -6,11 +6,13 @@
     "author": "Martin Josefsson <martin.josefsson@brickblock.io>",
     "license": "UNLICENSED",
     "scripts": {
-        "start": "node ./src/index.js"
+        "start": "node ./src/index.js",
+        "test": "tape tests/*.js"
     },
     "dependencies": {
         "express": "^4.16.2",
         "knex": "^0.14.0",
-        "mysql": "^2.15.0"
+        "mysql": "^2.15.0",
+        "tape": "^4.8.0"
     }
 }
