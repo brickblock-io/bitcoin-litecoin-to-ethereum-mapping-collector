@@ -9,6 +9,8 @@
         "start": "node ./src/index.js"
     },
     "dependencies": {
-        "express": "^4.16.2"
+        "express": "^4.16.2",
+        "knex": "^0.14.0",
+        "mysql": "^2.15.0"
     }
 }

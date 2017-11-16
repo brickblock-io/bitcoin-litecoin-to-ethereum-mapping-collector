@@ -20,10 +20,10 @@ A cryptographic signature will allow us to verify that they truly own said Bitco
 
 And that is what this app is about! A DB, a `POST` http route, and some validation.
 
-## How to run
-
-`$ yarn start`
-
 ## Docker run it
 
 `$ docker build -t bitcoin-litecoin-mapping . && docker run -ti -p 8080:8080 bitcoin-litecoin-mapping`
+
+alternatively
+
+`$ yarn start`
