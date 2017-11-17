@@ -1,6 +1,6 @@
 const { is, not } = require("ramda")
 const isString = is(String)
-var Message = require("bitcore-message")
+const Message = require("bitcore-message")
 
 const isValidSignature = (address, message, signature) => {
   let ret = false
