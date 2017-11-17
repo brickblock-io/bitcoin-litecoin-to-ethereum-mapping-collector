@@ -60,8 +60,8 @@ app.post("/address-map", (req, httpRes) => {
         signature: req.body.signature
       }),
       (err, dbResult) => {
-        console.log(err, dbResult)
         if (err) {
+          console.log(err, dbResult)
           return httpRes
             .status(500)
             .send(
