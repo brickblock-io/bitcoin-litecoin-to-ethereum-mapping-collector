@@ -14,8 +14,6 @@ const {
   errorsInMappingPayload
 } = require("./isValidAddressMappingPayload.js")
 
-console.log(process.env["MYSQL_HOST"])
-
 if (
   isNil(process.env["MYSQL_HOST"]) ||
   isNil(process.env["MYSQL_USERNAME"]) ||
