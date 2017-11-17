@@ -3,7 +3,6 @@ const isString = is(String)
 var Message = require("bitcore-message")
 
 const isValidSignature = (address, message, signature) => {
-  console.log(address, message, signature)
   let ret = false
   try {
     ret = Message(message).verify(address, signature)
@@ -25,6 +24,7 @@ const errorsInMappingPayload = valueMapping => {
     errors.push("Missing signature")
   }
   if (errors.length > 0) {
+    console.assert(Array.isArray(errors))
     return errors
   }
   if (
@@ -38,11 +38,12 @@ const errorsInMappingPayload = valueMapping => {
   ) {
     errors.push("Invalid signature")
   }
+  console.assert(Array.isArray(errors))
   return errors
 }
 
 function isValidAddressMappingPayload(valueMapping) {
-  return errorsInMappingPayload(valueMapping).length() === 0
+  return errorsInMappingPayload(valueMapping).length === 0
 }
 
 module.exports = {
