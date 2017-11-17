@@ -22,7 +22,7 @@ And that is what this app is about! A DB, a `POST` http route, and some validati
 
 ## Before running the program
 
-This program connects to a MySQL database (fun fact: did you know it's names after it's creators daughter My? Sweet!).
+This program connects to a MySQL database (fun fact: did you know it is named after it's creators daughter named "My"? Sweet!).
 
 To run this, you must have a small file names `.env`. It should follow this pattern:
 
