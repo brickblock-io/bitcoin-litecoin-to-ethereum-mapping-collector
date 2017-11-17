@@ -7,12 +7,13 @@ const { isNil } = require("ramda")
 require("dotenv").config()
 
 const app = express()
-app.use(bodyParser.json())
 
 const {
   isValidAddressMappingPayload,
   errorsInMappingPayload
 } = require("./isValidAddressMappingPayload.js")
+
+app.use(bodyParser.json())
 
 if (
   isNil(process.env["MYSQL_HOST"]) ||
@@ -35,12 +36,13 @@ const connection = mysql.createConnection({
 
 connection.connect()
 
-connection.query("SELECT * FROM address_mapping", (error, res, fields) => {
-  if (error) {
-    console.error(error)
-  }
-  console.log("Current mappings: ", res)
-})
+// This is how you can query for all address_mapping rows
+/* connection.query("SELECT * FROM address_mapping", (error, res, fields) => {
+ *   if (error) {
+ *     console.error(error)
+ *   }
+ *   console.log("Current mappings: ", res)
+ * })*/
 
 const insertionQuery = mapping =>
   squel
@@ -54,8 +56,6 @@ app.get("/address-map", (req, res) =>
 )
 
 app.post("/address-map", (req, httpRes) => {
-  console.log("REQ body!!!", req.body)
-
   if (isValidAddressMappingPayload(req.body)) {
     connection.query(
       insertionQuery({
