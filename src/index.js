@@ -51,10 +51,6 @@ const insertionQuery = mapping =>
     .setFieldsRows([mapping])
     .toString()
 
-app.get("/address-map", (req, res) =>
-  res.send(`it works! req.message: ${req.message}`)
-)
-
 app.post("/address-map", (req, httpRes) => {
   if (isValidAddressMappingPayload(req.body)) {
     connection.query(
