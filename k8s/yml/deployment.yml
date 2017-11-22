@@ -24,7 +24,7 @@ spec:
       - name: image-pull-secret
       containers:
       - name: $SERVICE_NAME
-        image: $CI_REGISTRY_IMAGE:$CI_REGISTRY_TAG 
+        image: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG 
         imagePullPolicy: Always
         env:
         - name: CI_PIPELINE_ID
