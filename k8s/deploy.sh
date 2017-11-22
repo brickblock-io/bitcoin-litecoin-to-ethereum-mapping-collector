@@ -4,6 +4,9 @@ set -euf -o pipefail
 
 export KUBECONFIG="$(pwd)/kubeconfig"
 
+# Enable Globbing
+shopt -s extglob
+
 # Write out the certificate for the K8s API
 export KUBE_CLUSTER_OPTIONS=
 if [[ -n "$KUBE_CA_PEM" ]]; then
@@ -31,4 +34,4 @@ kubectl config use-context gitlab-deploy
 # envsubst templates stdin with environment variables. 
 # Its not part of standard tools so its use might be considered a bit risque in certain circles.
 
-cat $(pwd)/k8s/yml/deployment.yml | envsubst | kubectl apply -n $KUBE_NAMESPACE -f - --insecure-skip-tls-verify=true 
+cat $(pwd)/k8s/yml/*.yml | envsubst | kubectl apply -n $KUBE_NAMESPACE -f - --insecure-skip-tls-verify=true 
