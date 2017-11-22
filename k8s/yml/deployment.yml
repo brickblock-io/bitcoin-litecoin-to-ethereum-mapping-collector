@@ -39,16 +39,16 @@ spec:
           value: "$MYSQL_PASSWORD"
         ports:
         - name: web
-          containerPort: $PORT
+          containerPort: 8080
         livenessProbe:
           httpGet:
             path: /
-            port: $PORT
+            port: 8080
           initialDelaySeconds: 15
           timeoutSeconds: 15
         readinessProbe:
           httpGet:
             path: /
-            port: $PORT
+            port: 8080
           initialDelaySeconds: 5
           timeoutSeconds: 3
