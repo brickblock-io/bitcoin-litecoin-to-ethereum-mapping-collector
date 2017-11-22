@@ -5,7 +5,7 @@ set -eufx -o pipefail
 export KUBECONFIG="$(pwd)/kubeconfig"
 export KUBE_NAMESPACE=$1
 export SERVICE_NAME=$1
-export HOSTNAME=$(echo $CI_ENVIRONMENT_HOSTNAME | sed -e "s/https:\/\///g")
+export HOSTNAME=$(echo $CI_ENVIRONMENT_URL | sed -e "s/https:\/\///g")
 
 
 # Enable Globbing
