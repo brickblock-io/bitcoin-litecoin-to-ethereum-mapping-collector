@@ -37,7 +37,7 @@ kubectl config use-context gitlab-deploy
 # Deploy stuff
 # envsubst templates stdin with environment variables. 
 # Its not part of standard tools so its use might be considered a bit risque in certain circles.
-
+# envsubst is installed from the gettext-base package on debian
 env
 
 # Namespace

@@ -27,10 +27,6 @@ spec:
         image: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG 
         imagePullPolicy: Always
         env:
-        - name: CI_PIPELINE_ID
-          value: "$CI_PIPELINE_ID"
-        - name: CI_JOB_ID
-          value: "$CI_JOB_ID"
         - name: MYSQL_HOST
           value: "$MYSQL_HOST"
         - name: MYSQL_USERNAME

@@ -8,6 +8,7 @@ items:
     name: basic-ingress-test-1
     annotations:
       ingress.gcp.kubernetes.io/pre-shared-cert: wildcard-brickblock-cloud-io
+      # redirect is not actually working atm!
       ingress.kubernetes.io/force-ssl-redirect: "true"
   spec:
     rules:
@@ -22,4 +23,3 @@ items:
     - hosts:
       - $HOSTNAME
 #      secretName: tls-wildcard-brickblock-cloud-io
-
