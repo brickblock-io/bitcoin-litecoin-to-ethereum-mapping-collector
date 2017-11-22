@@ -1,0 +1,4 @@
+ikind: Namespace
+apiVersion: v1
+metadata:
+  name: $KUBE_NAMESPACE

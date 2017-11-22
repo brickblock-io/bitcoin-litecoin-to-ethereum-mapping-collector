@@ -1,0 +1,25 @@
+# https://github.com/kubernetes/ingress-gce/blob/master/docs/annotations.md
+apiVersion: v1
+kind: List
+items:
+- apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata:
+    name: basic-ingress-test-1
+    annotations:
+      ingress.gcp.kubernetes.io/pre-shared-cert: wildcard-brickblock-cloud-io
+      ingress.kubernetes.io/force-ssl-redirect: "true"
+  spec:
+    rules:
+    - host: $HOSTNAME
+      http:
+        paths:
+        - backend:
+            serviceName: $SERVICE_NAME
+            servicePort: 80
+          path: /*
+    tls:
+    - hosts:
+      - $HOSTNAME
+#      secretName: tls-wildcard-brickblock-cloud-io
+

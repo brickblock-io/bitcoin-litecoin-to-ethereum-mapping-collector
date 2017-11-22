@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: $SERVICE_NAME
+  namespace: $KUBE_NAMESPACE
+  labels:
+    app: $SERVICE_NAME
+    pipeline_id: "$CI_PIPELINE_ID"
+    build_id: "$CI_JOB_ID"
+    tier: web
+spec:
+  replicas: $replicas
+  revisionHistoryLimit: 5
+  template:
+    metadata:
+      name: $SERVICE_NAME
+      labels:
+        app: $SERVICE_NAME
+        tier: web
+        track: $CI_ENVIRONMENT_SLUG
+    spec:
+      imagePullSecrets:
+      - name: image-pull-secret
+      containers:
+      - name: $SERVICE_NAME
+        image: $CI_REGISTRY_IMAGE:$CI_REGISTRY_TAG 
+        imagePullPolicy: Always
+        env:
+        - name: CI_PIPELINE_ID
+          value: "$CI_PIPELINE_ID"
+        - name: CI_JOB_ID
+          value: "$CI_JOB_ID"
+        - name: MYSQL_HOST
+          value: "$MYSQL_HOST"
+        - name: MYSQL_USERNAME
+          value: "$MYSQL_USERNAME"        
+        - name: MYSQL_PASSWORD
+          value: "$MYSQL_PASSWORD"
+        ports:
+        - name: web
+          containerPort: $PORT
+        livenessProbe:
+          httpGet:
+            path: /
+            port: $PORT
+          initialDelaySeconds: 15
+          timeoutSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /
+            port: $PORT
+          initialDelaySeconds: 5
+          timeoutSeconds: 3
