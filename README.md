@@ -20,6 +20,20 @@ A cryptographic signature will allow us to verify that they truly own said Bitco
 
 And that is what this app is about! A DB, a `POST` http route, and some validation.
 
+## Before running the program
+
+This program connects to a MySQL database (fun fact: did you know it is named after it's creators daughter named "My"? Sweet!).
+
+To run this, you must have a small file names `.env`. It should follow this pattern:
+
+```
+MYSQL_HOST=125.63.21.16
+MYSQL_USERNAME=my-mysql-username
+MYSQL_PASSWORD=some-password
+```
+
+I put these in a small file called `.env`, and I start the program by doing `$ yarn start-watch`.
+
 ## Docker run it
 
 `$ docker build -t bitcoin-litecoin-mapping . && docker run -ti -p 8080:8080 bitcoin-litecoin-mapping`
@@ -35,3 +49,9 @@ or with [Nodemon](https://nodemon.io/) watching
 ## Testing
 
 To run the Javascript tests, run `$ yarn && yarn test`.
+
+You can also test it with curl.
+
+```
+$ curl -v -H "Content-Type: application/json" -X POST -d '{"address": "1Au9ATfh7btcE2ongcYs7HdmFP3X87By5x","ethereumAddress": "0x908ad7535af813aa60fdfce13bfc203ae5f3fcfe","signature": "IEIpDoCrsQqGZrdZNflrEk8vuDI8TzgwOAIPRdJtsdg8fFkt+SgV4uMG5zI95REQebg1hiz/7m+zo6DfHdyceWA="}' http://localhost:8080/address-map
+```
