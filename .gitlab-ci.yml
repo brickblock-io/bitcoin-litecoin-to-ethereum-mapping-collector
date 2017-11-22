@@ -80,8 +80,8 @@ deploy-review:
     - master
 #  variables:
 #    GIT_STRATEGY: none
-#  tags:
-#    - nginx
+  tags:
+    - google
 #    - review-apps
 #    - deploy
   script:
