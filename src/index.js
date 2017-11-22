@@ -3,15 +3,14 @@ const bodyParser = require("body-parser")
 const squel = require("squel")
 const mysql = require("mysql")
 const { isNil } = require("ramda")
-
-require("dotenv").config()
-
-const app = express()
-
 const {
   isValidAddressMappingPayload,
   errorsInMappingPayload
 } = require("./isValidAddressMappingPayload.js")
+
+require("dotenv").config()
+
+const app = express()
 
 app.use(bodyParser.json())
 
@@ -44,12 +43,12 @@ connection.connect()
  *   console.log("Current mappings: ", res)
  * })*/
 
+// Mapping -> SQLQuery
 const insertionQuery = mapping =>
   squel
     .insert()
     .into("address_mapping")
     .setFieldsRows([mapping])
-    .toString()
 
 app.post("/address-map", (req, httpRes) => {
   if (isValidAddressMappingPayload(req.body)) {
@@ -58,15 +57,11 @@ app.post("/address-map", (req, httpRes) => {
         address: req.body.address,
         ethereumAddress: req.body.ethereumAddress,
         signature: req.body.signature
-      }),
+      }).toString(),
       (err, dbResult) => {
         if (err) {
           console.log(err, dbResult)
-          return httpRes
-            .status(500)
-            .send(
-              "An unknown error occured. Please try again in 30 minutes. If it still does not work, please get in touch with us."
-            )
+          return httpRes.status(500)
         } else {
           return httpRes.status(200).send("OK")
         }
