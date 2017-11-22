@@ -38,6 +38,8 @@ kubectl config use-context gitlab-deploy
 # envsubst templates stdin with environment variables. 
 # Its not part of standard tools so its use might be considered a bit risque in certain circles.
 
+env
+
 # Namespace
 cat $(pwd)/k8s/yml/namespace.yml | envsubst | kubectl apply -f - --insecure-skip-tls-verify=true
 
