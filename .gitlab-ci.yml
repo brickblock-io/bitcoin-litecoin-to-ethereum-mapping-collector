@@ -84,9 +84,12 @@ deploy-review:
     - google
 #    - review-apps
 #    - deploy
+  variables:
+    - MYSQL_HOST: "35.205.87.182"
+    - MYSQL_USER: "address-mapper"
   script:
     - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
-    - /bin/bash $(pwd)/k8s/deploy.sh rev-platform--$CI_COMMIT_REF_SLUG
+    - /bin/bash $(pwd)/k8s/deploy.sh rev-clm-brk--$CI_COMMIT_REF_SLUG
       #    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_HOSTNAME}/andrew.holway/deploy-scripts.git
       #    - /bin/sh $(pwd)/deploy-scripts/deploy.sh map-api
 
@@ -112,11 +115,14 @@ deploy-staging:
     url: https://staging-claim-brk.brickblock-cloud.io
   only:
     - master
+  variables:
+    - MYSQL_HOST: "35.205.87.182"
+    - MYSQL_USER: "address-mapper" 
   script:
-    - python --version
+  script:
     - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
-    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_HOSTNAME}/andrew.holway/deploy-scripts.git
-    - /bin/sh $(pwd)/deploy-scripts/deploy.sh address-map-api
+    - /bin/bash $(pwd)/k8s/deploy.sh staging-claim-brk
+
 
 deploy-production:
   stage: deploy
