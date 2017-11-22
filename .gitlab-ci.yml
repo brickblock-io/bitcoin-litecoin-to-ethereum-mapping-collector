@@ -69,7 +69,7 @@ build-and-push-docker-image:
 
 
 deploy-review:
-  stage: review
+  stage: deploy
   environment:
     name: rev-claim-brk--$CI_BUILD_REF_NAME
     url: https://rev-claim-brk--$CI_COMMIT_REF_SLUG.brickblock-cloud.io
@@ -106,7 +106,7 @@ stop-review:
     - master
 
 deploy-staging:
-  stage: staging
+  stage: deploy
   environment:
     name: staging-claim-brk
     url: https://staging-claim-brk.brickblock-cloud.io
@@ -119,7 +119,7 @@ deploy-staging:
     - /bin/sh $(pwd)/deploy-scripts/deploy.sh address-map-api
 
 deploy-production:
-  stage: production
+  stage: deploy
   environment:
     name: production-claim-brk
     url: https://production-claim-brk.brickblock-cloud.io
