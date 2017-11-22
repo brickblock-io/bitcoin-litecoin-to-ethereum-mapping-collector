@@ -12,20 +12,20 @@ if [[ -n "$KUBE_CA_PEM" ]]; then
 fi
 
 # Set up kubectl for out cluster
-chronic kubectl config set-cluster gitlab-deploy \
+kubectl config set-cluster gitlab-deploy \
   --server="$KUBE_URL" \
   $KUBE_CLUSTER_OPTIONS
 
-chronic kubectl config set-credentials gitlab-deploy \
+kubectl config set-credentials gitlab-deploy \
   --token="$KUBE_TOKEN" \
   $KUBE_CLUSTER_OPTIONS
 
-chronic kubectl config set-context gitlab-deploy \
+kubectl config set-context gitlab-deploy \
   --cluster=gitlab-deploy \
   --user=gitlab-deploy \
   --namespace="$KUBE_NAMESPACE"
 
-chronic kubectl config use-context gitlab-deploy
+kubectl config use-context gitlab-deploy
 
 # Deploy stuff
 # envsubst templates stdin with environment variables. 
