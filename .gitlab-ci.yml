@@ -86,7 +86,6 @@ deploy-review:
 #    - deploy
   script:
     - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
-    - ifconfig
     - env
     - pwd
     - ls -la $(pwd)
