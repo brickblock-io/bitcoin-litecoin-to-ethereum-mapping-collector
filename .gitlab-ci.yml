@@ -88,9 +88,7 @@ deploy-review:
     - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
     - env
     - pwd
-    - ls -la $(pwd)
-    - ls -la $(pwd)/k8s 
-    - /bin/bash $(pwd)/k8s/deploy.sh
+    - /bin/bash $(pwd)/k8s/deploy.sh rev-platform--$CI_COMMIT_REF_SLUG
       #    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_HOSTNAME}/andrew.holway/deploy-scripts.git
       #    - /bin/sh $(pwd)/deploy-scripts/deploy.sh map-api
 
