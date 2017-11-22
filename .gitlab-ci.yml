@@ -86,6 +86,7 @@ deploy-review:
 #    - deploy
   script:
     - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
+    - env
     - ls -la $(pwd)
     - ls -la $(pwd)/k8s 
     - /bin/bash $(pwd)/k8s/deploy.sh
