@@ -4,6 +4,7 @@ set -eufx -o pipefail
 
 export KUBECONFIG="$(pwd)/kubeconfig"
 export KUBE_NAMESPACE=$1
+export SERVICE_NAME=$1
 
 # Enable Globbing
 shopt -s extglob
