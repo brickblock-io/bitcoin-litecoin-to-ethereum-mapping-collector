@@ -26,9 +26,8 @@ stages:
   - setup
   - test
   - build
-  - review
-  - staging
-  - production
+  - deploy
+  - stop-review
 
 before_script:
   # The image generated in this build
@@ -92,7 +91,7 @@ deploy-review:
       #    - /bin/sh $(pwd)/deploy-scripts/deploy.sh map-api
 
 stop-review:
-  stage: review
+  stage: stop-review
   environment:
     name: rev-claim-brk--$CI_BUILD_REF_NAME
     url: https://rev-claim-brk--$CI_COMMIT_REF_SLUG.brickblock-cloud.io
