@@ -35,4 +35,4 @@ kubectl config use-context gitlab-deploy
 # Its not part of standard tools so its use might be considered a bit risque in certain circles.
 
 
-cat $(pwd)/k8s/yml/deployment.yml | tee /dev/tty | envsubst | kubectl apply -n $KUBE_NAMESPACE -f - --insecure-skip-tls-verify=true 
+cat $(pwd)/k8s/yml/deployment.yml | tee /dev/stderr | envsubst | kubectl apply -n $KUBE_NAMESPACE -f - --insecure-skip-tls-verify=true 
