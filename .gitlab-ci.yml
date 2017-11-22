@@ -86,7 +86,7 @@ deploy-review:
 #    - deploy
   variables:
     MYSQL_HOST: "35.205.87.182"
-    MYSQL_USER: "address-mapper"
+    MYSQL_USERNAME: "address-mapper"
   script:
     - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
     - /bin/bash $(pwd)/k8s/deploy.sh rev-clm-brk--$CI_COMMIT_REF_SLUG
@@ -117,7 +117,7 @@ deploy-staging:
     - master
   variables:
     MYSQL_HOST: "35.205.87.182"
-    MYSQL_USER: "address-mapper" 
+    MYSQL_USERNAME: "address-mapper" 
   script:
   script:
     - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN

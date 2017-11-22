@@ -10,7 +10,7 @@ metadata:
     build_id: "$CI_JOB_ID"
     tier: web
 spec:
-  replicas: $replicas
+  replicas: 3
   revisionHistoryLimit: 5
   template:
     metadata:
