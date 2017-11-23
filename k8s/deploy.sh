@@ -57,8 +57,8 @@ kubectl rollout status -n "$KUBE_NAMESPACE" -w "deployment/$SERVICE_NAME" --inse
 
 echo "The application was deployed to $KUBE_NAMESPACE"
 
-kubectl get pods -n $KUBE_NAMESPACE -o wide
-kubectl get service -n $KUBE_NAMESPACE -o wide
-kubectl describe ingress -n $KUBE_NAMESPACE
+kubectl get pods -n $KUBE_NAMESPACE -o wide --insecure-skip-tls-verify=true
+kubectl get service -n $KUBE_NAMESPACE -o wide --insecure-skip-tls-verify=true
+kubectl describe ingress -n $KUBE_NAMESPACE --insecure-skip-tls-verify=true
 
 #fin
