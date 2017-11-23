@@ -26,9 +26,8 @@ stages:
   - setup
   - test
   - build
-  - review
-  - staging
-  - production
+  - deploy
+  - stop-review
 
 before_script:
   # The image generated in this build
@@ -70,31 +69,35 @@ build-and-push-docker-image:
 
 
 deploy-review:
-  stage: review
+  stage: deploy
   environment:
-    name: review-$CI_BUILD_REF_NAME
-    url: https://$CI_BUILD_REF_SLUG.brickblock-cloud.io
+    name: rev-claim-brk--$CI_BUILD_REF_NAME
+    url: https://rev-claim-brk--$CI_COMMIT_REF_SLUG.brickblock-cloud.io
     on_stop: stop-review
   only:
     - branches
   except:
     - master
-  variables:
-    GIT_STRATEGY: none
-#  tags:
-#    - nginx
+#  variables:
+#    GIT_STRATEGY: none
+  tags:
+    - google
 #    - review-apps
 #    - deploy
+  variables:
+    MYSQL_HOST: "35.205.87.182"
+    MYSQL_USERNAME: "address-mapper"
   script:
     - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
-    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_HOSTNAME}/andrew.holway/deploy-scripts.git
-    - /bin/sh $(pwd)/deploy-scripts/deploy.sh map-api
+    - /bin/bash $(pwd)/k8s/deploy.sh rev-clm-brk--$CI_COMMIT_REF_SLUG
+      #    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_HOSTNAME}/andrew.holway/deploy-scripts.git
+      #    - /bin/sh $(pwd)/deploy-scripts/deploy.sh map-api
 
 stop-review:
-  stage: review
+  stage: stop-review
   environment:
-    name: review-$CI_BUILD_REF_NAME
-    url: https://$CI_BUILD_REF_SLUG.brickblock-cloud.io
+    name: rev-claim-brk--$CI_BUILD_REF_NAME
+    url: https://rev-claim-brk--$CI_COMMIT_REF_SLUG.brickblock-cloud.io
     action: stop
   when: manual
   script:
@@ -106,23 +109,26 @@ stop-review:
     - master
 
 deploy-staging:
-  stage: staging
+  stage: deploy
   environment:
-    name: staging
-    url: https://staging-map-api.brickblock-cloud.io
+    name: staging-claim-brk
+    url: https://staging-claim-brk.brickblock-cloud.io
   only:
     - master
+  variables:
+    MYSQL_HOST: "35.205.87.182"
+    MYSQL_USERNAME: "address-mapper" 
   script:
-    - python --version
+  script:
     - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
-    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_HOSTNAME}/andrew.holway/deploy-scripts.git
-    - /bin/sh $(pwd)/deploy-scripts/deploy.sh address-map-api
+    - /bin/bash $(pwd)/k8s/deploy.sh staging-claim-brk
+
 
 deploy-production:
-  stage: production
+  stage: deploy
   environment:
-    name: production
-    url: https://production-map-api.brickblock-cloud.io
+    name: production-claim-brk
+    url: https://production-claim-brk.brickblock-cloud.io
   script:
     - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
     - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_HOSTNAME}/andrew.holway/deploy-scripts.git
