@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eufx -o pipefail
+set -euf -o pipefail
 
 export KUBECONFIG="$(pwd)/kubeconfig"
 export KUBE_NAMESPACE=$1
@@ -50,9 +50,15 @@ cat $(pwd)/k8s/yml/deployment.yml | envsubst | kubectl apply -n $KUBE_NAMESPACE 
 cat $(pwd)/k8s/yml/service.yml | envsubst | kubectl apply -n $KUBE_NAMESPACE -f - --insecure-skip-tls-verify=true
 
 # Ingress
-cat $(pwd)/k8s/yml/ingress.yml | envsubst
 cat $(pwd)/k8s/yml/ingress.yml | envsubst | kubectl apply -n $KUBE_NAMESPACE -f - --insecure-skip-tls-verify=true
 
 # Check the status
 kubectl rollout status -n "$KUBE_NAMESPACE" -w "deployment/$SERVICE_NAME" --insecure-skip-tls-verify=true
 
+echo "The application was deployed to $KUBE_NAMESPACE"
+
+kubectl get pods -n $KUBE_NAMESPACE -o wide
+kubectl get service -n $KUBE_NAMESPACE -o wide
+kubectl describe ingress -n $KUBE_NAMESPACE
+
+#fin
