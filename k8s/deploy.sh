@@ -41,15 +41,19 @@ kubectl config use-context gitlab-deploy
 env
 
 # Namespace
+cat $(pwd)/k8s/yml/namespace.yml | envsubst
 cat $(pwd)/k8s/yml/namespace.yml | envsubst | kubectl apply -f - --insecure-skip-tls-verify=true
 
 # Deployment
+cat $(pwd)/k8s/yml/deployment.yml | envsubst
 cat $(pwd)/k8s/yml/deployment.yml | envsubst | kubectl apply -n $KUBE_NAMESPACE -f - --insecure-skip-tls-verify=true
 
 # Service
+cat $(pwd)/k8s/yml/service.yml | envsubst
 cat $(pwd)/k8s/yml/service.yml | envsubst | kubectl apply -n $KUBE_NAMESPACE -f - --insecure-skip-tls-verify=true
 
 # Ingress
+cat $(pwd)/k8s/yml/ingress.yml | envsubst
 cat $(pwd)/k8s/yml/ingress.yml | envsubst | kubectl apply -n $KUBE_NAMESPACE -f - --insecure-skip-tls-verify=true
 
 # Check the status
