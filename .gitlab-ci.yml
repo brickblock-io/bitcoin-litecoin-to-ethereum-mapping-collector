@@ -1,4 +1,9 @@
 # NOTE: We're currently not running build tasks inside docker containers because of
+# gle
+#   variables:
+#       MYSQL_HOST: "35.205.87.182"
+#           MYSQL_USERNAME: "address-mapper"
+#
 # bad performance and missing docker caching in gitlab. See these issues for example:
 # - https://gitlab.com/gitlab-org/gitlab-ce/issues/17861#note_37212331
 # - https://gitlab.com/gitlab-org/gitlab-ce/issues/33313
@@ -78,20 +83,14 @@ deploy-review:
     - branches
   except:
     - master
-#  variables:
-#    GIT_STRATEGY: none
   tags:
     - google
-#    - review-apps
-#    - deploy
   variables:
     MYSQL_HOST: "35.205.87.182"
     MYSQL_USERNAME: "address-mapper"
   script:
     - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
     - /bin/bash $(pwd)/k8s/deploy.sh rev-clm-brk--$CI_COMMIT_REF_SLUG
-      #    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_HOSTNAME}/andrew.holway/deploy-scripts.git
-      #    - /bin/sh $(pwd)/deploy-scripts/deploy.sh map-api
 
 stop-review:
   stage: stop-review
@@ -115,10 +114,11 @@ deploy-staging:
     url: https://staging-claim-brk.brickblock-cloud.io
   only:
     - master
+  tags:
+    - google
   variables:
     MYSQL_HOST: "35.205.87.182"
     MYSQL_USERNAME: "address-mapper" 
-  script:
   script:
     - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
     - /bin/bash $(pwd)/k8s/deploy.sh staging-claim-brk
@@ -130,10 +130,15 @@ deploy-production:
     name: production-claim-brk
     url: https://production-claim-brk.brickblock-cloud.io
   script:
+  tags:
+    - google
+  variables:
+    MYSQL_HOST: "35.205.87.182"
+    MYSQL_USERNAME: "address-mapper"
+  script:
     - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
-    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_HOSTNAME}/andrew.holway/deploy-scripts.git
-    - /bin/sh $(pwd)/deploy-scripts/deploy.sh address-map-api
-  # These two 'onlys' give us AND logic. The commit should both be in master AND be tagged. NB. this is git tagging. not 'gitlab' tagging.
+    - /bin/bash $(pwd)/k8s/deploy.sh production-claim-brk
+# These two 'onlys' give us AND logic. The commit should both be in master AND be tagged. NB. this is git tagging. not 'gitlab' tagging.
   only:
     - master
   only:
