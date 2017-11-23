@@ -52,3 +52,7 @@ cat $(pwd)/k8s/yml/service.yml | envsubst | kubectl apply -n $KUBE_NAMESPACE -f 
 # Ingress
 cat $(pwd)/k8s/yml/ingress.yml | envsubst
 cat $(pwd)/k8s/yml/ingress.yml | envsubst | kubectl apply -n $KUBE_NAMESPACE -f - --insecure-skip-tls-verify=true
+
+# Check the status
+kubectl rollout status -n "$KUBE_NAMESPACE" -w "deployment/$SERVICE_NAME" --insecure-skip-tls-verify=true
+
