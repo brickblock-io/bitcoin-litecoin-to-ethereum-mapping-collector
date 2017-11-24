@@ -1,27 +1,35 @@
 {
-    "name": "bitcoin-litecoin-to-ethereum-mapping-collector",
-    "version": "1.0.0",
-    "description": "We collect bitcoin/litecoin addresses, ethereum (bbt payout) addresses and signatures, verifying the user truly is the owner of said bitcoin/litecoin address",
-    "main": "src/index.js",
-    "author": "Martin Josefsson <martin.josefsson@brickblock.io>",
-    "license": "UNLICENSED",
-    "scripts": {
-        "start": "node ./src/index.js",
-        "start-watch": "NODE_ENV=development nodemon ./src/index.js",
-        "migrate": "knex migrate:latest",
-        "test": "tape tests/*.js | tap-dot"
-    },
-    "dependencies": {
-        "bitcore-message": "^1.0.4",
-        "body-parser": "^1.18.2",
-        "dotenv": "^4.0.0",
-        "express": "^4.16.2",
-        "knex": "^0.14.0",
-        "mysql": "^2.15.0",
-        "nodemon": "^1.12.1",
-        "ramda": "^0.25.0",
-        "squel": "^5.12.0",
-        "tap-dot": "^1.0.5",
-        "tape": "^4.8.0"
-    }
+  "name": "bitcoin-litecoin-to-ethereum-mapping-collector",
+  "version": "1.1.0",
+  "description":
+    "We collect bitcoin/litecoin addresses, ethereum (bbt payout) addresses and signatures, verifying the user truly is the owner of said bitcoin/litecoin address",
+  "main": "src/index.js",
+  "author": "Martin Josefsson <martin.josefsson@brickblock.io>",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "yarn db-migrate && node ./src/index.js",
+    "start-watch":
+      "yarn db-migrate && NODE_ENV=development nodemon ./src/index.js",
+    "db-env":
+      "source .env && echo \"db_migrator_db_url=mysql://$MYSQL_USERNAME:$MYSQL_PASSWORD@$MYSQL_HOST/$MYSQL_DATABASE\" > .npmrc",
+    "db-migrate": "yarn db-env && db-migrate",
+    "db-rollback": "yarn db-env && db-rollback",
+    "db-create": "yarn db-env && db-create",
+    "db-status": "yarn db-env && db-status",
+    "test": "tape tests/*.js | tap-dot"
+  },
+  "dependencies": {
+    "bitcore-message": "^1.0.4",
+    "body-parser": "^1.18.2",
+    "db-migrator": "^2.2.0",
+    "dotenv": "^4.0.0",
+    "express": "^4.16.2",
+    "mysql": "^2.15.0",
+    "nodemon": "^1.12.1",
+    "promise-mysql": "^3.1.3",
+    "ramda": "^0.25.0",
+    "squel": "^5.12.0",
+    "tap-dot": "^1.0.5",
+    "tape": "^4.8.0"
+  }
 }
