@@ -55,3 +55,7 @@ You can also test it with curl.
 ```
 $ curl -v -H "Content-Type: application/json" -X POST -d '{"address": "1Au9ATfh7btcE2ongcYs7HdmFP3X87By5x","ethereumAddress": "0x908ad7535af813aa60fdfce13bfc203ae5f3fcfe","signature": "IEIpDoCrsQqGZrdZNflrEk8vuDI8TzgwOAIPRdJtsdg8fFkt+SgV4uMG5zI95REQebg1hiz/7m+zo6DfHdyceWA="}' http://localhost:8080/address-map
 ```
+
+## Migrations
+
+We use the Node.js program [db-migrator](https://www.npmjs.com/package/db-migrator) to run migrations on the DB, which is a MySQL running in Google Cloud Platform.
