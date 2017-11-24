@@ -1,17 +1,14 @@
 {
   "name": "bitcoin-litecoin-to-ethereum-mapping-collector",
   "version": "1.1.0",
-  "description":
-    "We collect bitcoin/litecoin addresses, ethereum (bbt payout) addresses and signatures, verifying the user truly is the owner of said bitcoin/litecoin address",
+  "description": "We collect bitcoin/litecoin addresses, ethereum (bbt payout) addresses and signatures, verifying the user truly is the owner of said bitcoin/litecoin address",
   "main": "src/index.js",
   "author": "Martin Josefsson <martin.josefsson@brickblock.io>",
   "license": "UNLICENSED",
   "scripts": {
     "start": "yarn db-migrate && node ./src/index.js",
-    "start-watch":
-      "yarn db-migrate && NODE_ENV=development nodemon ./src/index.js",
-    "db-env":
-      "source .env && echo \"db_migrator_db_url=mysql://$MYSQL_USERNAME:$MYSQL_PASSWORD@$MYSQL_HOST/$MYSQL_DATABASE\" > .npmrc",
+    "start-watch": "yarn db-migrate && NODE_ENV=development nodemon ./src/index.js",
+    "db-env": "source .env && echo \"db_migrator_db_url=mysql://$MYSQL_USERNAME:$MYSQL_PASSWORD@$MYSQL_HOST/$MYSQL_DATABASE\" > .npmrc",
     "db-migrate": "yarn db-env && db-migrate",
     "db-rollback": "yarn db-env && db-rollback",
     "db-create": "yarn db-env && db-create",
@@ -31,5 +28,8 @@
     "squel": "^5.12.0",
     "tap-dot": "^1.0.5",
     "tape": "^4.8.0"
+  },
+  "devDependencies": {
+    "prettier": "^1.8.2"
   }
 }
