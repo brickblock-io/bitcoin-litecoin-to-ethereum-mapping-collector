@@ -23,28 +23,72 @@ spec:
       imagePullSecrets:
       - name: image-pull-secret
       containers:
-      - name: $SERVICE_NAME
-        image: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG 
-        imagePullPolicy: Always
-        env:
-        - name: MYSQL_HOST
-          value: "$MYSQL_HOST"
-        - name: MYSQL_USERNAME
-          value: "$MYSQL_USERNAME"        
-        - name: MYSQL_PASSWORD
-          value: "$MYSQL_PASSWORD"
-        ports:
-        - name: web
-          containerPort: 8080
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 8080
-          initialDelaySeconds: 15
-          timeoutSeconds: 15
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 8080
-          initialDelaySeconds: 5
-          timeoutSeconds: 3
+        - name: $SERVICE_NAME
+          image: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG 
+          imagePullPolicy: Always
+          env:
+            - name: MYSQL_HOST
+              value: 127.0.0.1
+            - name: MYSQL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql-db-credentials
+                  key: username
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql-db-credentials
+                  key: password
+            - name: MYSQL_SSL_PATH
+              value: "/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+#           - name: MYSQL_HOST
+#             value: "$MYSQL_HOST"
+#           - name: MYSQL_USERNAME
+#             value: "$MYSQL_USERNAME"        
+#           - name: MYSQL_PASSWORD
+#             value: "$MYSQL_PASSWORD"
+          ports:
+          - name: web
+            containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 15
+            timeoutSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 5
+            timeoutSeconds: 3
+        # Change <INSTANCE_CONNECTION_NAME> here to include your GCP
+        # project, the region of your Cloud SQL instance and the name
+        # of your Cloud SQL instance. The format is
+        # $PROJECT:$REGION:$INSTANCE
+        # [START proxy_container]
+        - name: cloudsql-proxy
+          image: gcr.io/cloudsql-docker/gce-proxy:1.11
+          command: ["/cloud_sql_proxy", "--dir=/cloudsql",
+                    "-instances=sonorous-cacao-185213:europe-west1:ico-claimants-data=tcp:3306",
+                    "-credential_file=/secrets/cloudsql/credentials.json"]
+          volumeMounts:
+            - name: cloudsql-instance-credentials
+              mountPath: /secrets/cloudsql
+              readOnly: true
+            - name: ssl-certs
+              mountPath: /etc/ssl/certs
+            - name: cloudsql
+              mountPath: /cloudsql
+      # [END proxy_container]
+      # [START volumes]
+      volumes:
+        - name: cloudsql-instance-credentials
+          secret:
+            secretName: cloudsql-instance-credentials
+        - name: cloudsql
+          emptyDir:
+        - name: ssl-certs
+          hostPath:
+            path: /etc/ssl/certs
+# [END volumes]
