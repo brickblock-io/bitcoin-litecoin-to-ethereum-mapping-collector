@@ -8,4 +8,4 @@ EXPOSE 8080
 
 RUN yarn
 
-ENTRYPOINT yarn start
+ENTRYPOINT env; yarn start

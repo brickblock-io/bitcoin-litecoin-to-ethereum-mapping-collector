@@ -15,6 +15,8 @@ const app = express()
 
 app.use(bodyParser.json())
 
+console.log("Current environment:", JSON.stringify(process.env))
+
 if (
   isNil(process.env["MYSQL_HOST"]) ||
   isNil(process.env["MYSQL_USERNAME"]) ||
@@ -73,7 +75,7 @@ app.post("/address-map", (req, httpRes) => {
   }
 })
 
-app.get("/", (req, res) => res.send("hello world"))
+app.get("/", (req, res) => res.send("hello wibble"))
 
 const port = 8080
 app.listen(port, () =>
