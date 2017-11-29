@@ -131,7 +131,7 @@ deploy-production:
   tags:
     - google
   variables:
-    MYSQL_INSTANCE: "sonorous-cacao-185213:europe-west1:ico-claimants-data"
+    MYSQL_INSTANCE: "sonorous-cacao-185213:europe-west1:production-claim-brk"
   script:
     - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
     - /bin/bash $(pwd)/k8s/deploy.sh production-claim-brk
