@@ -6,7 +6,6 @@ export KUBECONFIG="$(pwd)/kubeconfig"
 export KUBE_NAMESPACE=$1
 export SERVICE_NAME=$1
 export HOSTNAME=$(echo $CI_ENVIRONMENT_URL | sed -e "s/https:\/\///g")
-export MYSQL_DATABASE=$(echo "rev-clm-brk--$CI_COMMIT_REF_SLUG" | sed 's/-/_/g')
 
 # Get kubeconfig. The cluster name should perhaps be parameterised.
 gcloud container clusters get-credentials prod-cluster --zone europe-west1-c
