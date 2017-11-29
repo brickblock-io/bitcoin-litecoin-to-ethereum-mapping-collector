@@ -15,7 +15,7 @@ const app = express()
 
 app.use(bodyParser.json())
 
-console.log("Current environment:", JSON.stringify(process.env))
+console.log('Current environment:', JSON.stringify(process.env))
 
 if (
   isNil(process.env['MYSQL_HOST']) ||
@@ -59,26 +59,34 @@ app.post('/address-map', (req, httpRes) => {
       .send(JSON.stringify(errorsInMappingPayload(req.body)))
   }
 
-  try {
-    pool.query(
-      insertionQuery({
-        address: req.body.address,
-        ethereumAddress: req.body.ethereumAddress,
-        signature: req.body.signature
-      }).toString(),
-      (error, dbResult) => {
-        if (error) {
-          console.log('POST /address-map ERROR:', error)
-          return httpRes.status(500).send()
-        } else {
-          return httpRes.status(200).send('OK')
-        }
+  fetch(
+    'https://blockchain-ico.brickblock.io/addr/' + req.body.address
+  ).then(addressCheckResponse => {
+    if (addressCheckResponse.ok) {
+      try {
+        pool.query(
+          insertionQuery({
+            address: req.body.address,
+            ethereumAddress: req.body.ethereumAddress,
+            signature: req.body.signature
+          }).toString(),
+          (error, dbResult) => {
+            if (error) {
+              console.log('POST /address-map ERROR:', error)
+              return httpRes.status(500).send()
+            } else {
+              return httpRes.status(200).send('OK')
+            }
+          }
+        )
+      } catch (error) {
+        console.log('POST /address-map ERROR:', error)
+        return httpRes.status(500).send()
       }
-    )
-  } catch (error) {
-    console.log('POST /address-map ERROR:', error)
-    return httpRes.status(500).send()
-  }
+    } else {
+      httpRes.status(404).send()
+    }
+  })
 })
 
 app.get('/', (req, res) => res.send('hello world'))
@@ -86,8 +94,7 @@ app.get('/', (req, res) => res.send('hello world'))
 const port = 8080
 app.listen(port, () =>
   console.log(
-    `App running on port ${port}. Check /address-map. Env is ${
-      process.env.NODE_ENV
-    }`
+    `App running on port ${port}. Check /address-map. Env is ${process.env
+      .NODE_ENV}`
   )
 )
