@@ -30,13 +30,14 @@ To run this, you must have a small file names `.env`. It should follow this patt
 MYSQL_HOST=125.63.21.16
 MYSQL_USERNAME=my-mysql-username
 MYSQL_PASSWORD=some-password
+MYSQL_DATABASE=db
 ```
 
 I put these in a small file called `.env`, and I start the program by doing `$ yarn start-watch`.
 
 ## Docker run it
 
-`$ docker build -t bitcoin-litecoin-mapping . && docker run -ti -p 8080:8080 bitcoin-litecoin-mapping`
+`$ docker build -t x . && docker run -ti -p 8080:8080 --env-file ./.env x`
 
 alternatively
 
