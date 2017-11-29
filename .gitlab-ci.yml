@@ -119,7 +119,7 @@ deploy-staging:
   variables:
     MYSQL_INSTANCE: "sonorous-cacao-185213:europe-west1:ico-claimants-data"
   script:
-    - export MYSQL_DATABASE=$(git rev-parse --abbrev-ref HEAD)
+    - export MYSQL_DATABASE=staging-claim-brk
     - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
     - /bin/bash $(pwd)/k8s/deploy.sh staging-claim-brk
 
@@ -135,7 +135,7 @@ deploy-production:
   variables:
     MYSQL_INSTANCE: "sonorous-cacao-185213:europe-west1:production-claim-brk"
   script:
-    - export MYSQL_DATABASE=$(git rev-parse --abbrev-ref HEAD)
+    - export MYSQL_DATABASE=production-claim-brk
     - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
     - /bin/bash $(pwd)/k8s/deploy.sh production-claim-brk
 # These two 'onlys' give us AND logic. The commit should both be in master AND be tagged. NB. this is git tagging. not 'gitlab' tagging.
