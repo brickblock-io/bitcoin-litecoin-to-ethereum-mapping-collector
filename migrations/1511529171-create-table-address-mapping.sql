@@ -1,5 +1,4 @@
--- 1511529171 UP create-table-address-mapping
-
+-- ====  UP  ====
 CREATE TABLE IF NOT EXISTS address_mapping(
   id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
   createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -9,3 +8,6 @@ CREATE TABLE IF NOT EXISTS address_mapping(
   signature TEXT,
   UNIQUE KEY signature (signature(100))
 );
+
+-- ==== DOWN ====
+DROP TABLE address_mapping;

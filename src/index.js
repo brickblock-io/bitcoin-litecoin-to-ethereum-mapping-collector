@@ -15,6 +15,8 @@ const app = express()
 
 app.use(bodyParser.json())
 
+console.log("Current environment:", JSON.stringify(process.env))
+
 if (
   isNil(process.env['MYSQL_HOST']) ||
   isNil(process.env['MYSQL_USERNAME']) ||

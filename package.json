@@ -6,13 +6,9 @@
   "author": "Martin Josefsson <martin.josefsson@brickblock.io>",
   "license": "UNLICENSED",
   "scripts": {
-    "start": "yarn db-migrate && node ./src/index.js",
-    "start-watch": "yarn db-migrate && NODE_ENV=development nodemon ./src/index.js",
-    "db-env": "source .env && echo \"db_migrator_db_url=mysql://$MYSQL_USERNAME:$MYSQL_PASSWORD@$MYSQL_HOST/$MYSQL_DATABASE\" > .npmrc",
-    "db-migrate": "yarn db-env && db-migrate",
-    "db-rollback": "yarn db-env && db-rollback",
-    "db-create": "yarn db-env && db-create",
-    "db-status": "yarn db-env && db-status",
+    "start": "yarn migrate && NODE_ENV=production node ./src/index.js",
+    "start-watch": "yarn migrate && NODE_ENV=development nodemon ./src/index.js",
+    "migrate": "./scripts/shmig -H $MYSQL_HOST -d $MYSQL_DATABASE -t mysql -l $MYSQL_USERNAME -p $MYSQL_PASSWORD up",
     "test": "tape tests/*.js | tap-dot"
   },
   "dependencies": {

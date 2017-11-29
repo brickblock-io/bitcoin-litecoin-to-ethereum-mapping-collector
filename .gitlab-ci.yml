@@ -72,7 +72,6 @@ build-and-push-docker-image:
     - docker tag $BUILD_IMAGE $RELEASE_IMAGE
     - docker push $RELEASE_IMAGE
 
-
 deploy-review:
   stage: deploy
   environment:
@@ -86,8 +85,7 @@ deploy-review:
   tags:
     - google
   variables:
-    MYSQL_HOST: "35.205.87.182"
-    MYSQL_USERNAME: "address-mapper"
+    MYSQL_INSTANCE: "sonorous-cacao-185213:europe-west1:ico-claimants-data"
   script:
     - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
     - /bin/bash $(pwd)/k8s/deploy.sh rev-clm-brk--$CI_COMMIT_REF_SLUG
@@ -99,9 +97,10 @@ stop-review:
     url: https://rev-claim-brk--$CI_COMMIT_REF_SLUG.brickblock-cloud.io
     action: stop
   when: manual
+  tags:
+    - google
   script:
-    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_HOSTNAME}/andrew.holway/deploy-scripts.git
-    - /bin/sh $(pwd)/deploy-scripts/destroy.sh map-api
+    - /bin/bash $(pwd)/k8s/purge.sh rev-clm-brk--$CI_COMMIT_REF_SLUG
   only:
     - branches
   except:
@@ -117,8 +116,7 @@ deploy-staging:
   tags:
     - google
   variables:
-    MYSQL_HOST: "35.205.87.182"
-    MYSQL_USERNAME: "address-mapper" 
+    MYSQL_INSTANCE: "sonorous-cacao-185213:europe-west1:ico-claimants-data"
   script:
     - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
     - /bin/bash $(pwd)/k8s/deploy.sh staging-claim-brk
@@ -133,8 +131,7 @@ deploy-production:
   tags:
     - google
   variables:
-    MYSQL_HOST: "35.205.87.182"
-    MYSQL_USERNAME: "address-mapper"
+    MYSQL_INSTANCE: "sonorous-cacao-185213:europe-west1:ico-claimants-data"
   script:
     - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
     - /bin/bash $(pwd)/k8s/deploy.sh production-claim-brk
