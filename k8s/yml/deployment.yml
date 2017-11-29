@@ -72,7 +72,7 @@ spec:
         - name: cloudsql-proxy
           image: gcr.io/cloudsql-docker/gce-proxy:1.11
           command: ["/cloud_sql_proxy", "--dir=/cloudsql",
-                    "-instances=sonorous-cacao-185213:europe-west1:ico-claimants-data=tcp:3306",
+                    "-instances=$MYSQL_INSTANCE=tcp:3306",
                     "-credential_file=/secrets/cloudsql/credentials.json"]
           volumeMounts:
             - name: cloudsql-instance-credentials
