@@ -50,8 +50,25 @@ _EOF_
 # The proxy requires a service account with the proper privileges for the Cloud SQL instance. 
 # We are just creating extra keys for the cloud-sql-client service account. The service account was created manually.
 
+{ # try
+
+    gcloud iam service-accounts create $KUBE_NAMESPACE --display-name=$KUBE_NAMESPACE
+
+} || { # catch
+echo "gcloud iam service-accounts create failed but thats probably ok :)"
+}
+
+{
+gcloud projects add-iam-policy-binding \
+	sonorous-cacao-185213 \
+	--member serviceAccount:$KUBE_NAMESPACE@sonorous-cacao-185213.iam.gserviceaccount.com \
+	--role roles/cloudsql.client
+} || {
+echo "gcloud projects add-iam-policy-binding failed but thats probably ok :)"
+}
+
 key_json_base64=$(gcloud iam service-accounts keys create - \
-            --iam-account cloud-sql-client@sonorous-cacao-185213.iam.gserviceaccount.com \
+            --iam-account $KUBE_NAMESPACE@sonorous-cacao-185213.iam.gserviceaccount.com \
             --no-user-output-enabled | base64 --wrap=0)
 
 
