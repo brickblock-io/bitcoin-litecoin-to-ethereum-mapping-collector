@@ -6,7 +6,9 @@ export KUBECONFIG="$(pwd)/kubeconfig"
 export KUBE_NAMESPACE=$1
 export SERVICE_NAME=$1
 export HOSTNAME=$(echo $CI_ENVIRONMENT_URL | sed -e "s/https:\/\///g")
-export SRV_ACC_USER=${file:0:21}-$(git rev-parse --short HEAD)
+export SRV_ACC_USER=${KUBE_NAMESPACE:0:21}-$(git rev-parse --short HEAD)
+
+echo "Gcloud service user =  $SRV_ACC_USER"
 
 # Get kubeconfig. The cluster name should perhaps be parameterised.
 gcloud container clusters get-credentials prod-cluster --zone europe-west1-c
