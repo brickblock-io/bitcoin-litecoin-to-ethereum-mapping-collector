@@ -6,6 +6,7 @@ export KUBECONFIG="$(pwd)/kubeconfig"
 export KUBE_NAMESPACE=$1
 export SERVICE_NAME=$1
 export HOSTNAME=$(echo $CI_ENVIRONMENT_URL | sed -e "s/https:\/\///g")
+export SRV_ACC_USER=${file:0:21}-$(git rev-parse --short HEAD)
 
 # Get kubeconfig. The cluster name should perhaps be parameterised.
 gcloud container clusters get-credentials prod-cluster --zone europe-west1-c
@@ -52,7 +53,7 @@ _EOF_
 
 { # try
 
-    gcloud iam service-accounts create $KUBE_NAMESPACE --display-name=$KUBE_NAMESPACE
+    gcloud iam service-accounts create $SRV_ACC_USER --display-name=$KUBE_NAMESPACE
 
 } || { # catch
 echo "gcloud iam service-accounts create failed but thats probably ok :)"
@@ -61,14 +62,14 @@ echo "gcloud iam service-accounts create failed but thats probably ok :)"
 {
 gcloud projects add-iam-policy-binding \
 	sonorous-cacao-185213 \
-	--member serviceAccount:$KUBE_NAMESPACE@sonorous-cacao-185213.iam.gserviceaccount.com \
+	--member serviceAccount:$SRV_ACC_USER@sonorous-cacao-185213.iam.gserviceaccount.com \
 	--role roles/cloudsql.client
 } || {
 echo "gcloud projects add-iam-policy-binding failed but thats probably ok :)"
 }
 
 key_json_base64=$(gcloud iam service-accounts keys create - \
-            --iam-account $KUBE_NAMESPACE@sonorous-cacao-185213.iam.gserviceaccount.com \
+            --iam-account $SRV_ACC_USER@sonorous-cacao-185213.iam.gserviceaccount.com \
             --no-user-output-enabled | base64 --wrap=0)
 
 
