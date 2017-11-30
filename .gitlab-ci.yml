@@ -88,7 +88,7 @@ deploy-review:
   script:
     - export MYSQL_DATABASE=$(git rev-parse --abbrev-ref HEAD | sed 's/-/_/g')
     - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
-    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_HOSTNAME}/infra/andrew.holway/infra.git
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_HOSTNAME}/andrew.holway/infra.git
     - /bin/bash $(pwd)/infra/k8s-db/deploy.sh rev-clm-brk--$CI_COMMIT_REF_SLUG
 
 stop-review:
@@ -121,7 +121,7 @@ deploy-staging:
   script:
     - export MYSQL_DATABASE=staging_claim_brk
     - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
-    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_HOSTNAME}/infra/andrew.holway/infra.git
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_HOSTNAME}/andrew.holway/infra.git
     - /bin/bash $(pwd)/infra/k8s-db/deploy.sh staging-claim-brk
 
 
@@ -138,7 +138,7 @@ deploy-production:
   script:
     - export MYSQL_DATABASE=production_claim_brk
     - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
-    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_HOSTNAME}/infra/andrew.holway/infra.git
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_HOSTNAME}/andrew.holway/infra.git
     - /bin/bash $(pwd)/infra/k8s-db/deploy.sh production-claim-brk
 # These two 'onlys' give us AND logic. The commit should both be in master AND be tagged. NB. this is git tagging. not 'gitlab' tagging.
   only:
