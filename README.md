@@ -1,6 +1,6 @@
 # Bitcoin Litecoin to ethereum mapping collector
 
-## What is this?
+##  What is this?
 
 Some of our users participate in the ICO using Bitcoin & Litecoin.
 
