@@ -23,6 +23,21 @@ test('verifying a signature', t => {
       'IEIpDoCrsQqGZrdZNflrEk8vuDI8TzgwOAIPRdJtsdg8fFkt+SgV4uMG5zI95REQebg1hiz/7m+zo6DfHdyceWA='
     )
   )
+  t.assert(
+    isValidSignature(
+      '17KxmFM2U7Y7Du5fjyMefrxjKkN5DSeBj8',
+      '0x57B174839cbD0A503B9Dfcb655e4f4B1B47B3296',
+      'IEehJCpI1dFZzW2HBk1P1dILtq+++fZXzRsCDKXxUiyPTwNUT8MXRc4EbRsf+jbhHCZd9zxuobMuPiMqNF1Kwa4='
+    )
+  )
+  t.assert(
+    isValidSignature(
+      '13ZqjBc1PS6Q8KZ5FeHk7ooiBLJfsTBFSt',
+      '0x4A4699D4C795c67844502Cd6b7b80a29ef189fe2',
+      'H4Nlv9cwRkLASoQbeU+U29F1XoJ4IpUBTH1TJouNuUXcDx6k+/jIwP3Vt9duz7beg1Sec9pNSGc7kvlWf+cqMiw='
+    )
+  )
+  t.assert(errorsInMappingPayload)
   /* t.assert(
    *   not(
    *     isValidSignature(
