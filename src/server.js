@@ -36,11 +36,14 @@ const startServer = (pool: *, port: number) => {
         }).toString(),
         (error, dbResult) => {
           if (error) {
-            console.log('POST /address-map ERROR:', error)
+            console.log(
+              '500 Database error Error POST /address-map, ERROR:',
+              error
+            )
             return httpRes.status(500).send()
           } else {
             console.log(
-              `Inserted valid Claim ${JSON.stringify(req.body)} into DB`
+              `200 OK Inserted valid Claim ${JSON.stringify(req.body)} into DB`
             )
             return httpRes.status(200).send('OK')
           }
