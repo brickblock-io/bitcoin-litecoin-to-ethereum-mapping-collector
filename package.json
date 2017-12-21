@@ -2,7 +2,7 @@
   "name": "bitcoin-litecoin-to-ethereum-mapping-collector",
   "version": "2.0.0",
   "description":
-    "We collect bitcoin/litecoin addresses, ethereum (bbt payout) addresses and signatures, verifying the user truly is the owner of said bitcoin/litecoin address",
+    "We collect bitcoin/litecoin addresses, ethereum (BBK payout) addresses and signatures, verifying the user truly is the owner of said bitcoin/litecoin address",
   "main": "src/index.js",
   "author": "Martin Josefsson <martin.josefsson@brickblock.io>",
   "license": "UNLICENSED",
