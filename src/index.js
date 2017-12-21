@@ -1,3 +1,4 @@
+// @flow
 const mysql = require('mysql')
 const { isNil } = require('ramda')
 const {
