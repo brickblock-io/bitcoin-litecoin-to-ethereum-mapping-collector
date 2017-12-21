@@ -35,9 +35,10 @@ stages:
   - stop-review
 
 before_script:
-  # The image generated in this build
+  - eval export SHORT_GIT_SHA=$(git rev-parse --short HEAD)
   - eval export SANITIZED_BRANCH_NAME=$(echo $CI_COMMIT_REF_NAME | sed -e "s/\//-/g")
-  - eval export BUILD_IMAGE=$CI_REGISTRY_IMAGE:$SANITIZED_BRANCH_NAME
+  # The image tag of this build
+  - eval export BUILD_IMAGE=${CI_REGISTRY_IMAGE}:${SANITIZED_BRANCH_NAME}-${SHORT_GIT_SHA}
   # The fqdn of the gitlab server is not available in the standard env vars so we cut it out of this URL
   - eval export GITLAB_HOSTNAME=$(echo $CI_PROJECT_URL | awk -F/ '{print $3}')
 
