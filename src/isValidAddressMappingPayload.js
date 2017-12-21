@@ -1,8 +1,16 @@
-const { is, not } = require("ramda")
+// @flow
+const { is, not } = require('ramda')
 const isString = is(String)
 // const Message = require("bitcore-message")
 
-const isValidSignature = (address, message, signature) => {
+type BitcoinOrLitecoinAddress = string
+type EthereumAddress = string
+
+const isValidSignature = (
+  address: BitcoinOrLitecoinAddress,
+  message: EthereumAddress,
+  signature: string
+) => {
   // So this library seems to be screwed.
   // Since we are way too late with deployments, I skip signature verification
   // FIXME
@@ -16,16 +24,22 @@ const isValidSignature = (address, message, signature) => {
    * return ret*/
 }
 
-const errorsInMappingPayload = valueMapping => {
+type ValueMapping = {
+  address: string,
+  ethereumAddress: string,
+  signature: string
+}
+
+const errorsInMappingPayload = (valueMapping: ValueMapping) => {
   let errors = []
   if (not(isString(valueMapping.address))) {
-    errors.push("Missing Bitcoin/Litecoin address")
+    errors.push('Missing Bitcoin/Litecoin address')
   }
   if (not(isString(valueMapping.ethereumAddress))) {
-    errors.push("Missing Ethereum address")
+    errors.push('Missing Ethereum address')
   }
   if (not(isString(valueMapping.signature))) {
-    errors.push("Missing signature")
+    errors.push('Missing signature')
   }
   if (errors.length > 0) {
     console.assert(Array.isArray(errors))
@@ -40,13 +54,13 @@ const errorsInMappingPayload = valueMapping => {
       )
     )
   ) {
-    errors.push("Invalid signature")
+    errors.push('Invalid signature')
   }
   console.assert(Array.isArray(errors))
   return errors
 }
 
-function isValidAddressMappingPayload(valueMapping) {
+function isValidAddressMappingPayload(valueMapping: ValueMapping) {
   return errorsInMappingPayload(valueMapping).length === 0
 }
 
