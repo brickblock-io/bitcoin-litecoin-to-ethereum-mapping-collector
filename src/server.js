@@ -3,11 +3,12 @@ const squel = require('squel')
 const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
+const { is } = require('ramda')
+
 const {
   isValidAddressMappingPayload,
   errorsInMappingPayload
 } = require('./isValidAddressMappingPayload.js')
-const { is } = require('ramda')
 
 const isObject = is(Object)
 const app = express()

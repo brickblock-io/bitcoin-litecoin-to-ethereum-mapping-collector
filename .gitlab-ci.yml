@@ -85,7 +85,7 @@ deploy-review:
     - google
   variables:
     MYSQL_INSTANCE: sonorous-cacao-185213:europe-west1:ico-claimants-data
-    MYSQL_DATABASE: rev-claim-brk--$CI_BUILD_REF_NAME
+    MYSQL_DATABASE: rev-claim-brk--$CI_COMMIT_REF_SLUG
   script:
     - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
     - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_HOSTNAME}/infrastructure/infra.git

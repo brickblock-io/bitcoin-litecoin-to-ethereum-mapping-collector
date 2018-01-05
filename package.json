@@ -1,22 +1,21 @@
 {
   "name": "bitcoin-litecoin-to-ethereum-mapping-collector",
   "version": "2.0.0",
-  "description":
-    "We collect bitcoin/litecoin addresses, ethereum (BBK payout) addresses and signatures, verifying the user truly is the owner of said bitcoin/litecoin address",
+  "description": "We collect bitcoin/litecoin addresses, ethereum (BBK payout) addresses and signatures, verifying the user truly is the owner of said bitcoin/litecoin address",
   "main": "src/index.js",
   "author": "Martin Josefsson <martin.josefsson@brickblock.io>",
   "license": "UNLICENSED",
   "scripts": {
-    "start":
-      "yarn flow && yarn migrate && NODE_ENV=production flow-node ./src/index.js",
-    "migrate":
-      "./scripts/shmig -H $MYSQL_HOST -d $MYSQL_DATABASE -t mysql -l $MYSQL_USERNAME -p $MYSQL_PASSWORD up",
+    "start": "yarn flow && yarn migrate && NODE_ENV=production flow-node ./src/index.js",
+    "migrate": "./scripts/shmig -H $MYSQL_HOST -d $MYSQL_DATABASE -t mysql -l $MYSQL_USERNAME -p $MYSQL_PASSWORD up",
     "test": "yarn run flow && flow-node tests/index_test.js"
   },
   "dependencies": {
+    "bitcoinjs-message": "^2.0.0",
     "bitcore-message": "^1.0.4",
     "body-parser": "^1.18.2",
     "cors": "^2.8.4",
+    "crypto-address-checker": "^3.0.0",
     "db-migrator": "^2.2.0",
     "dotenv": "^4.0.0",
     "express": "^4.16.2",

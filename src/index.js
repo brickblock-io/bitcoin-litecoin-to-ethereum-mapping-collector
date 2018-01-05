@@ -1,10 +1,6 @@
 // @flow
 const mysql = require('mysql')
 const { isNil } = require('ramda')
-const {
-  isValidAddressMappingPayload,
-  errorsInMappingPayload
-} = require('./isValidAddressMappingPayload.js')
 const { startServer } = require('./server.js')
 
 require('dotenv').config()

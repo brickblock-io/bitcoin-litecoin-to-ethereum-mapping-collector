@@ -1,58 +1,84 @@
 // @flow
-const { is, not } = require('ramda')
-const isString = is(String)
-// const Message = require("bitcore-message")
+const verifyMessage = require('bitcoinjs-message').verify
+const {
+  isLitecoinAddress,
+  isBitcoinAddress,
+  isEthereumAddress
+} = require('crypto-address-checker')
+const { is, isNil, not } = require('ramda')
 
-type BitcoinOrLitecoinAddress = string
-type EthereumAddress = string
+const isString = is(String)
+
+type BitcoinOrLitecoinT = 'BTC' | 'LTC'
+type BitcoinOrLitecoinAddressT = string
+type EthereumAddressT = string
+
+const messagePrefixes = {
+  BTC: '\u0018Bitcoin Signed Message:\n',
+  LTC: '\u0019Litecoin Signed Message:\n'
+}
 
 const isValidSignature = (
-  address: BitcoinOrLitecoinAddress,
-  message: EthereumAddress,
+  address: BitcoinOrLitecoinAddressT,
+  addressType: BitcoinOrLitecoinT,
+  message: EthereumAddressT,
   signature: string
 ) => {
-  // So this library seems to be screwed.
-  // Since we are way too late with deployments, I skip signature verification
-  // FIXME
-  return true
-  /* let ret = false
-   * try {
-   *   ret = Message(message).verify(address, signature)
-   * } catch (e) {
-   *   ret = false
-   * }
-   * return ret*/
+  let isValid
+  try {
+    isValid = verifyMessage(
+      message,
+      address,
+      signature,
+      messagePrefixes[addressType]
+    )
+  } catch (error) {
+    isValid = false
+  }
+  return isValid
 }
 
 type ValueMapping = {
-  address: string,
-  ethereumAddress: string,
+  address: BitcoinOrLitecoinAddressT,
+  ethereumAddress: EthereumAddressT,
   signature: string
 }
 
-const errorsInMappingPayload = (valueMapping: ValueMapping) => {
+const errorsInMappingPayload = ({
+  address,
+  ethereumAddress,
+  signature
+}: ValueMapping) => {
   let errors = []
-  if (not(isString(valueMapping.address))) {
+  if (not(isString(address))) {
     errors.push('Missing Bitcoin/Litecoin address')
   }
-  if (not(isString(valueMapping.ethereumAddress))) {
+  if (not(isString(ethereumAddress))) {
     errors.push('Missing Ethereum address')
   }
-  if (not(isString(valueMapping.signature))) {
+  if (not(isString(signature))) {
     errors.push('Missing signature')
   }
-  if (errors.length > 0) {
-    console.assert(Array.isArray(errors))
-    return errors
+
+  // first report missing
+  if (errors.length !== 0) return errors
+
+  if (not(isEthereumAddress(ethereumAddress))) {
+    errors.push('Ethereum address is not valid')
   }
+  let addressType
+  if (isBitcoinAddress(address)) {
+    addressType = 'BTC'
+  } else if (isLitecoinAddress(address)) {
+    addressType = 'LTC'
+  } else {
+    errors.push('Address is not valid BTC or LTC')
+  }
+
   if (
-    not(
-      isValidSignature(
-        valueMapping.address,
-        valueMapping.ethereumAddress,
-        valueMapping.signature
-      )
-    )
+    addressType &&
+    errors.length === 0 &&
+    not(isValidSignature(address, addressType, ethereumAddress, signature))
   ) {
     errors.push('Invalid signature')
   }
