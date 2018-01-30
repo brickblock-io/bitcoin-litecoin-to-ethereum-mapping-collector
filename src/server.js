@@ -4,7 +4,7 @@ const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const { is } = require('ramda')
-
+const sqlTable = 'address_mapping'
 const {
   isValidAddressMappingPayload,
   errorsInMappingPayload
@@ -19,7 +19,7 @@ app.use(cors())
 const insertionQuery = mapping =>
   squel
     .insert()
-    .into('address_mapping')
+    .into(sqlTable)
     .setFieldsRows([mapping])
 
 const startServer = (pool: *, port: number) => {
@@ -65,7 +65,29 @@ const startServer = (pool: *, port: number) => {
     }
   })
 
-  app.get('/', (req, res) => res.send('hello world'))
+  app.get('/', (req, httpRes) => {
+    try {
+      pool.query(`SELECT 1 FROM ${sqlTable} LIMIT 1`,
+        (error, dbResult) => {
+          if (error) {
+            console.log(
+              `Healthcheck Error. Cannot touch database table: ${sqlTable}`,
+              error
+            )
+            return httpRes.status(500).send(error.code)
+          } else {
+            console.log(
+              `Healthcheck Success`
+            )
+            return httpRes.status(200).send('OK')
+          }
+        }
+      )
+    } catch (error) {
+      console.log('GET / ERROR:', error)
+      return httpRes.status(500).send()
+    }
+  })
 
   app.listen(port, () =>
     console.log(`App running on port ${port}. Check /address-map.`)
