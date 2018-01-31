@@ -8,6 +8,6 @@ ADD . /api-program
 
 EXPOSE 8080
 
-RUN apt-get update && apt-get upgrade -y && apt-get install -y mysql-client && yarn
+RUN apt-get update && apt-get upgrade -y && apt-get install -y mysql-client && yarn --production
 
 ENTRYPOINT env; yarn start

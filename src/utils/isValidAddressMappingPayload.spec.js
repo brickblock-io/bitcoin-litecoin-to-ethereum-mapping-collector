@@ -7,7 +7,7 @@ const {
   isValidAddressMappingPayload,
   errorsInMappingPayload,
   isValidSignature
-} = require('../src/isValidAddressMappingPayload.js')
+} = require('./isValidAddressMappingPayload.js')
 
 const validBTCMapping = {
   address: '1JpdKD25rPUyU9ET9xnNiE8cbroMK1woVz',

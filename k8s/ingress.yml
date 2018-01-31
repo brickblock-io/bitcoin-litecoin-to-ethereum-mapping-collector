@@ -1,0 +1,23 @@
+# https://github.com/kubernetes/ingress-gce/blob/master/docs/annotations.md
+apiVersion: v1
+kind: List
+items:
+- apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata:
+    name: production-ingress
+    annotations:
+      ingress.gcp.kubernetes.io/pre-shared-cert: wildcard-brickblock-io
+      kubernetes.io/ingress.global-static-ip-name: bitcoin-litecoin-claim-brickblock-io
+  spec:
+    rules:
+    - host: bitcoin-litecoin-claim.brickblock.io
+      http:
+        paths:
+        - backend:
+            serviceName: production-claim-brk
+            servicePort: 80
+          path: /*
+    tls:
+    - hosts:
+      - bitcoin-litecoin-claim.brickblock.io

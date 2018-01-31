@@ -6,31 +6,30 @@
   "author": "Martin Josefsson <martin.josefsson@brickblock.io>",
   "license": "UNLICENSED",
   "scripts": {
-    "start": "yarn flow && yarn migrate && NODE_ENV=production flow-node ./src/index.js",
+    "start": "yarn migrate && NODE_ENV=production flow-node ./src/index.js",
+    "start:dev": "nodemon --config nodemon.json --watch ./src -e js",
     "migrate": "./scripts/shmig -H $MYSQL_HOST -d $MYSQL_DATABASE -t mysql -l $MYSQL_USERNAME -p $MYSQL_PASSWORD up",
-    "test": "yarn run flow && flow-node tests/index_test.js"
+    "test": "yarn run flow && tape -r 'flow-remove-types/register' src/**/*.spec.js",
+    "precommit": "yarn flow"
   },
   "dependencies": {
     "bitcoinjs-message": "^2.0.0",
-    "bitcore-message": "^1.0.4",
     "body-parser": "^1.18.2",
     "cors": "^2.8.4",
     "crypto-address-checker": "^3.0.0",
-    "db-migrator": "^2.2.0",
     "dotenv": "^4.0.0",
     "express": "^4.16.2",
-    "flow": "^0.2.3",
-    "flow-bin": "^0.61.0",
     "flow-remove-types": "^1.2.3",
     "mysql": "^2.15.0",
-    "nodemon": "^1.12.1",
-    "promise-mysql": "^3.1.3",
     "ramda": "^0.25.0",
-    "squel": "^5.12.0",
-    "tap-dot": "^1.0.5",
-    "tape": "^4.8.0"
+    "squel": "^5.12.0"
   },
   "devDependencies": {
-    "prettier": "^1.8.2"
+    "flow-bin": "^0.61.0",
+    "husky": "0.14.3",
+    "nodemon": "^1.14.11",
+    "prettier": "^1.8.2",
+    "tap-dot": "^1.0.5",
+    "tape": "^4.8.0"
   }
 }
