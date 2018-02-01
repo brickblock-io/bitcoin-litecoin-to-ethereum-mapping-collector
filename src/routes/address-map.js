@@ -2,17 +2,21 @@ const { is } = require('ramda')
 
 const {
   isValidAddressMappingPayload,
-  errorsInMappingPayload
+  errorsInMappingPayload,
+  signatureError
 } = require('../utils/isValidAddressMappingPayload.js')
 const {
   addressMappingTable,
   insertionQuery
 } = require('../utils/database-queries')
+const { isAddressInICO } = require('../utils/blockchain-api')
 
 const isObject = is(Object)
 const insertIntoAddressMappingTable = insertionQuery(addressMappingTable)
 
-const postAddressMap = mysql => (req, res) => {
+const addressNotInIcoError = 'ERR:Address-Not-In-ICO'
+
+const postAddressMap = mysql => async (req, res) => {
   try {
     const body = isObject(req.body) ? req.body : JSON.parse(req.body)
     console.assert(
@@ -21,10 +25,28 @@ const postAddressMap = mysql => (req, res) => {
         req.body
       )}`
     )
+
+    // check that the submited values are valid
     if (!isValidAddressMappingPayload(body)) {
-      return res.status(400).send(JSON.stringify(errorsInMappingPayload(body)))
+      const errorList = errorsInMappingPayload(body)
+
+      // when the only error was a signature error, we send a hint for the i18n the client
+      // should show
+      if (errorList.length === 1 && errorList[0] === signatureError) {
+        return res.status(400).send(signatureError)
+      }
+
+      // otherwise we send a list of all errors that made this request not valid
+      return res.status(400).send(JSON.stringify(errorList))
     }
 
+    // check that submited address participated in the ICO
+    const addressIsInICO = await isAddressInICO(body.address)
+    if (!addressIsInICO) {
+      return res.status(400).send(addressNotInIcoError)
+    }
+
+    // everything is good! insert data into table
     mysql.query(
       insertIntoAddressMappingTable({
         address: body.address,

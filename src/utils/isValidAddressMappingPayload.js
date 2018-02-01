@@ -1,4 +1,5 @@
 // @flow
+
 const verifyMessage = require('bitcoinjs-message').verify
 const {
   isLitecoinAddress,
@@ -7,11 +8,13 @@ const {
 } = require('crypto-address-checker')
 const { is, isNil, not } = require('ramda')
 
-const isString = is(String)
-
 type BitcoinOrLitecoinT = 'BTC' | 'LTC'
 type BitcoinOrLitecoinAddressT = string
 type EthereumAddressT = string
+
+const isString = is(String)
+
+const signatureError = 'ERR:Invalid-Signature'
 
 const messagePrefixes = {
   BTC: '\u0018Bitcoin Signed Message:\n',
@@ -80,7 +83,7 @@ const errorsInMappingPayload = ({
     errors.length === 0 &&
     not(isValidSignature(address, addressType, ethereumAddress, signature))
   ) {
-    errors.push('Invalid signature')
+    errors.push(signatureError)
   }
   console.assert(Array.isArray(errors))
   return errors
@@ -91,7 +94,8 @@ function isValidAddressMappingPayload(valueMapping: ValueMapping) {
 }
 
 module.exports = {
-  isValidAddressMappingPayload,
   errorsInMappingPayload,
-  isValidSignature
+  isValidAddressMappingPayload,
+  isValidSignature,
+  signatureError
 }

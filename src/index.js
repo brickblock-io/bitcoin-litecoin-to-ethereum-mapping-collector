@@ -7,14 +7,19 @@ require('dotenv').config()
 const fallbackPort = 8080
 
 const { startServer } = require('./server.js')
-;['MYSQL_HOST', 'MYSQL_USERNAME', 'MYSQL_PASSWORD', 'MYSQL_DATABASE'].forEach(
-  envVar => {
-    if (!isNil(process.env[envVar])) return
+;[
+  'API_AUTH_TOKEN',
+  'BLOCKCHAIN_API_URL',
+  'MYSQL_HOST',
+  'MYSQL_USERNAME',
+  'MYSQL_PASSWORD',
+  'MYSQL_DATABASE'
+].forEach(envVar => {
+  if (!isNil(process.env[envVar])) return
 
-    console.log('init ERROR: missing process.env', envVar)
-    process.exit(1)
-  }
-)
+  console.log('init ERROR: missing process.env', envVar)
+  process.exit(1)
+})
 
 const pool = mysql.createPool({
   connectionLimit: 100,

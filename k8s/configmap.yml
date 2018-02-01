@@ -4,3 +4,4 @@ metadata:
   name: environment-variables
 data:
   API_AUTH_TOKEN: ${API_AUTH_TOKEN}
+  BLOCKCHAIN_API_URL: ${BLOCKCHAIN_API_URL}
